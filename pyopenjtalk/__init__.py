@@ -22,7 +22,10 @@ try:
 except ImportError:
     raise ImportError("BUG: version.py doesn't exist. Please file a bug report.")
 
-from .htsengine import HTSEngine
+try:
+    from .htsengine import HTSEngine
+except ImportError:
+    HTSEngine = None
 from .openjtalk import OpenJTalk
 from .openjtalk import mecab_dict_index as _mecab_dict_index
 from .utils import merge_njd_marine_features
@@ -43,11 +46,15 @@ _dict_download_url = "https://github.com/r9y9/open_jtalk/releases/download/v1.11
 _DICT_URL = f"{_dict_download_url}/open_jtalk_dic_utf_8-1.11.tar.gz"
 
 # Default mei_normal.voice for HMM-based TTS
-DEFAULT_HTS_VOICE = str(
-    _file_manager.enter_context(
-        as_file(_pyopenjtalk_ref / "htsvoice/mei_normal.htsvoice")
-    )
-).encode("utf-8")
+DEFAULT_HTS_VOICE = (
+    str(
+        _file_manager.enter_context(
+            as_file(_pyopenjtalk_ref / "htsvoice/mei_normal.htsvoice")
+        )
+    ).encode("utf-8")
+    if HTSEngine is not None
+    else b""
+)
 
 
 def _extract_dic():
@@ -113,7 +120,15 @@ def _marine_factory():
 _global_jtalk = _global_instance_manager(_jtalk_factory)
 # Global instance of HTSEngine
 # mei_normal.voice is used as default
-_global_htsengine = _global_instance_manager(lambda: HTSEngine(DEFAULT_HTS_VOICE))
+def _htsengine_factory():
+    if HTSEngine is None:
+        raise RuntimeError(
+            "This pyopenjtalk wheel contains the text frontend only."
+        )
+    return HTSEngine(DEFAULT_HTS_VOICE)
+
+
+_global_htsengine = _global_instance_manager(_htsengine_factory)
 # Global instance of Marine
 _global_marine = _global_instance_manager(_marine_factory)
 

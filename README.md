@@ -6,6 +6,10 @@ x64. The source and Python API remain upstream-compatible. The wheels support
 the Japanese G2P frontend used by Beyond VRM without requiring an end-user C++
 toolchain.
 
+These release wheels intentionally contain the OpenJTalk text frontend only.
+The upstream HTS speech synthesizer and its voice asset are not included because
+Beyond VRM uses Irodori-TTS for synthesis and needs only `pyopenjtalk.g2p()`.
+
 [![PyPI](https://img.shields.io/pypi/v/pyopenjtalk.svg)](https://pypi.python.org/pypi/pyopenjtalk)
 [![Python package](https://github.com/r9y9/pyopenjtalk/actions/workflows/ci.yaml/badge.svg)](https://github.com/r9y9/pyopenjtalk/actions/workflows/ci.yaml)
 [![Build Status](https://app.travis-ci.com/r9y9/pyopenjtalk.svg?branch=master)](https://app.travis-ci.com/r9y9/pyopenjtalk)

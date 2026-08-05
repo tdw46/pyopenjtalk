@@ -49,7 +49,9 @@ jobs:
           CIBW_BUILD: cp310-*
           CIBW_ARCHS: ${{ matrix.arch }}
           CIBW_BUILD_VERBOSITY: "1"
-          CIBW_ENVIRONMENT: SETUPTOOLS_SCM_PRETEND_VERSION=0.4.1+bves.1
+          CIBW_ENVIRONMENT: >-
+            SETUPTOOLS_SCM_PRETEND_VERSION=0.4.1+bves.1
+            PYOPENJTALK_FRONTEND_ONLY=1
           CIBW_TEST_COMMAND: >-
             python -c "import pyopenjtalk;
             assert pyopenjtalk.g2p('こんにちは') == 'k o N n i ch i w a'"
