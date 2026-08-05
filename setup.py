@@ -166,4 +166,15 @@ if not frontend_only:
         )
     ]
 
-setup(ext_modules=ext_modules, cmdclass={"build_ext": custom_build_ext})
+setup(
+    ext_modules=ext_modules,
+    cmdclass={"build_ext": custom_build_ext},
+    package_data=(
+        {"pyopenjtalk": ["open_jtalk_dic_utf_8-1.11/*"]}
+        if frontend_only
+        else {}
+    ),
+    exclude_package_data=(
+        {"pyopenjtalk": ["htsvoice/*"]} if frontend_only else {}
+    ),
+)

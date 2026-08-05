@@ -9,6 +9,8 @@ toolchain.
 These release wheels intentionally contain the OpenJTalk text frontend only.
 The upstream HTS speech synthesizer and its voice asset are not included because
 Beyond VRM uses Irodori-TTS for synthesis and needs only `pyopenjtalk.g2p()`.
+The pinned OpenJTalk dictionary is hash-verified and embedded by the release
+workflow, so first use performs no additional runtime download.
 
 [![PyPI](https://img.shields.io/pypi/v/pyopenjtalk.svg)](https://pypi.python.org/pypi/pyopenjtalk)
 [![Python package](https://github.com/r9y9/pyopenjtalk/actions/workflows/ci.yaml/badge.svg)](https://github.com/r9y9/pyopenjtalk/actions/workflows/ci.yaml)
