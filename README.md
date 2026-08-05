@@ -1,5 +1,11 @@
 # pyopenjtalk
 
+This fork adds a tagged GitHub Actions release workflow that builds and tests
+CPython 3.10 wheels for Windows x64, macOS Intel and Apple Silicon, and Linux
+x64. The source and Python API remain upstream-compatible. The wheels support
+the Japanese G2P frontend used by Beyond VRM without requiring an end-user C++
+toolchain.
+
 [![PyPI](https://img.shields.io/pypi/v/pyopenjtalk.svg)](https://pypi.python.org/pypi/pyopenjtalk)
 [![Python package](https://github.com/r9y9/pyopenjtalk/actions/workflows/ci.yaml/badge.svg)](https://github.com/r9y9/pyopenjtalk/actions/workflows/ci.yaml)
 [![Build Status](https://app.travis-ci.com/r9y9/pyopenjtalk.svg?branch=master)](https://app.travis-ci.com/r9y9/pyopenjtalk)

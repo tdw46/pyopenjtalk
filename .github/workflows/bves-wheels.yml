@@ -1,0 +1,88 @@
+name: Build Beyond VRM wheels
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "bves-v*"
+
+permissions:
+  contents: read
+
+jobs:
+  wheels:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux x64
+            os: ubuntu-latest
+            arch: x86_64
+          - name: Windows x64
+            os: windows-latest
+            arch: AMD64
+          - name: macOS Intel
+            os: macos-15-intel
+            arch: x86_64
+          - name: macOS Apple Silicon
+            os: macos-latest
+            arch: arm64
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install wheel builder
+        run: python -m pip install cibuildwheel==2.23.3
+
+      - name: Build and test CPython 3.10 wheel
+        run: python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_BUILD: cp310-*
+          CIBW_ARCHS: ${{ matrix.arch }}
+          CIBW_BUILD_VERBOSITY: "1"
+          CIBW_ENVIRONMENT: SETUPTOOLS_SCM_PRETEND_VERSION=0.4.1+bves.1
+          CIBW_TEST_COMMAND: >-
+            python -c "import pyopenjtalk;
+            assert pyopenjtalk.g2p('こんにちは') == 'k o N n i ch i w a'"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ strategy.job-index }}
+          path: wheelhouse/*.whl
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/bves-v')
+    needs: wheels
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          path: wheelhouse
+          merge-multiple: true
+
+      - name: Build platform manifest
+        run: python tools/build_bves_release_manifest.py wheelhouse manifest.json
+
+      - name: Publish permanent release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create "$GITHUB_REF_NAME"
+          wheelhouse/*.whl manifest.json
+          --title "Beyond VRM pyopenjtalk wheels $GITHUB_REF_NAME"
+          --notes "Reproducible CPython 3.10 wheels for Beyond VRM Japanese G2P."
