@@ -9,7 +9,7 @@ from pathlib import Path
 
 WHEEL_PATTERN = re.compile(
     r"^pyopenjtalk-(?P<version>.+)-cp310-cp310-"
-    r"(?P<platform>[^.]+)\.whl$"
+    r"(?P<platform>.+)\.whl$"
 )
 
 
