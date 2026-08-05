@@ -50,6 +50,7 @@ jobs:
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD: cp310-*
+          CIBW_SKIP: "*-musllinux_*"
           CIBW_ARCHS: ${{ matrix.arch }}
           CIBW_BUILD_VERBOSITY: "1"
           CIBW_ENVIRONMENT: >-
