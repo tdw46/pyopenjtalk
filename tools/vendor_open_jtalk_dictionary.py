@@ -1,4 +1,4 @@
-"""Vendor the pinned OpenJTalk dictionary into release wheels."""
+"""Prepare pinned data for the frontend-only Beyond VRM release wheels."""
 
 import hashlib
 import io
@@ -43,6 +43,9 @@ def main():
     required = ("sys.dic", "char.bin", "matrix.bin", "COPYING")
     if not all((destination / filename).is_file() for filename in required):
         raise RuntimeError("OpenJTalk dictionary archive is incomplete")
+    voice_directory = destination_root / "htsvoice"
+    if voice_directory.exists():
+        shutil.rmtree(voice_directory)
 
 
 if __name__ == "__main__":
